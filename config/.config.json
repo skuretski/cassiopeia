@@ -1,0 +1,6 @@
+{
+    "dbURI": "cassiopeia.c8ycic3qufqc.us-west-2.rds.amazonaws.com",
+    "dbUser": "cassiopeia_user",
+    "dbPass": "cs467spring",
+    "database": "cassiopeia"
+}
