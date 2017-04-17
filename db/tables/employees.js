@@ -18,7 +18,6 @@ exports.selectAllEmployees = function(req, res, next){
 };
 
 exports.selectEmployeeById = function(req, res, next){
-    console.log(req.body.id);
     connection.query({
         sql: 'SELECT * FROM `employees` WHERE `id` = ?',
         timeout: 40000,
