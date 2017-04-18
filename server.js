@@ -13,7 +13,12 @@ var accessLogStream = fs.createWriteStream(path.join(__dirname, '.access.log'), 
 app.use(morgan('combined', {stream: accessLogStream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
+
+app.use(function(req, res, next){
+    return res.render('index');
+});
 
 app.set('port', process.env.PORT || 3000);
 
