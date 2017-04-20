@@ -10,7 +10,10 @@ const funding = require('../db/funding');
 const projects = require('../db/projects');
 const tasks = require('../db/tasks');
 */
-
+router.route('/')
+    .get(function(req, res, next){
+        res.render('index');
+    });
 router.route('/employees')
     .get(employees.selectAllEmployees);
     //.post()
