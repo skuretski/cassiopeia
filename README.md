@@ -1,6 +1,6 @@
 <h1> Cassiopeia API </h1>
 
-<h2> Authors:</h2>
+<h2> Authors</h2>
 <ul>
 <li> Kyle Guthrie </li>
 <li> Susan Kuretski </li>
