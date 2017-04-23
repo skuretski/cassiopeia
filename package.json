@@ -17,5 +17,10 @@
     "morgan": "^1.8.1",
     "mysql": "^2.13.0",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0"
+    //Mocha (installed globally)
   }
 }
