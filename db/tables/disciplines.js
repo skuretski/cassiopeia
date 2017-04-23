@@ -34,3 +34,25 @@ exports.selectDisciplineById = function(req, res, next){
         }
     });
 };
+
+exports.addDiscipline = function(req, res, next){
+    var post = {
+        title: req.body.title,
+        description: req.body.description
+    }
+    connection.query({
+        sql: 'INSERT INTO `disciplines` SET ?',
+        timeout: 40000,
+        values: post
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            console.log(results);
+            res.json(results);
+        }
+    });
+};

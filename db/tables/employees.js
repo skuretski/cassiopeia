@@ -34,3 +34,26 @@ exports.selectEmployeeById = function(req, res, next){
         }
     });
 };
+
+exports.addEmployee = function(req, res, next){
+    var post = {
+        first: req.body.first,
+        last: req.body.last,
+        discipline_id: req.body.discipline_id
+    }
+    connection.query({
+        sql: 'INSERT INTO `employees` SET ?',
+        timeout: 40000,
+        values: post
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            console.log(results);
+            res.json(results);
+        }
+    });
+};

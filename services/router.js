@@ -15,12 +15,13 @@ router.route('/')
         res.render('index');
     });
 router.route('/employees')
-    .get(employees.selectAllEmployees);
-    //.post()
+    .get(employees.selectAllEmployees)
+    .post(employees.addEmployee);
 router.route('/employees/:id')
     .get(employees.selectEmployeeById);
 router.route('/disciplines')
-    .get(disc.selectAllDisciplines);
+    .get(disc.selectAllDisciplines)
+    .post(disc.addDiscipline);
 router.route('/disciplines/:id')
     .get(disc.selectDisciplineById);
 /*
