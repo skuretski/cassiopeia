@@ -1,2 +1,9 @@
+#Node Modules
 node_modules/
+
+#Config file
 .config.json
+
+#Access Log
+.access.log
+
