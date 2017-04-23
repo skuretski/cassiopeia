@@ -11,7 +11,7 @@ exports.selectAllEmployees = function(req, res, next){
             });
         }
         else{
-            console.log(results);
+   //         console.log(results);
             res.json(results);
         }
     });
