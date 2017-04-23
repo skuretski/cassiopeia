@@ -36,6 +36,7 @@ exports.selectEmployeeById = function(req, res, next){
 };
 
 exports.addEmployee = function(req, res, next){
+    // TODO: Input validation
     var post = {
         first: req.body.first,
         last: req.body.last,
@@ -44,7 +45,7 @@ exports.addEmployee = function(req, res, next){
     connection.query({
         sql: 'INSERT INTO `employees` SET ?',
         timeout: 40000,
-        values: post
+        values: post 
     }, function(error, results){
         if(error){
             return res.json({

@@ -1,8 +1,8 @@
 const connection = require('../../db/index');
 
-exports.selectAllProjects = function(req, res, next){
+exports.selectAllSow = function(req, res, next){
     connection.query({
-        sql: 'SELECT * FROM `projects`',
+        sql: 'SELECT * FROM `sow`',
         timeout: 40000 //40seconds
     }, function(error, results){
         if(error){
@@ -16,9 +16,9 @@ exports.selectAllProjects = function(req, res, next){
     });
 };
 
-exports.selectProjectById = function(req, res, next){
+exports.selectSowById = function(req, res, next){
     connection.query({
-        sql: 'SELECT * FROM `projects` WHERE `id` = ?',
+        sql: 'SELECT * FROM `sow` WHERE `id` = ?',
         timeout: 40000,
         values: req.params.id
     }, function(error, results){
