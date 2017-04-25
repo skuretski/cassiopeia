@@ -33,3 +33,26 @@ exports.selectProjectById = function(req, res, next){
         }
     });
 };
+
+exports.addProject = function(req, res, next){
+    // TODO: Input validation
+    var post = {
+        title: req.body.title,
+        description: req.body.description
+    }
+    connection.query({
+        sql: 'INSERT INTO `projects` SET ?',
+        timeout: 40000,
+        values: post 
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            console.log(results);
+            res.json(results);
+        }
+    });
+};

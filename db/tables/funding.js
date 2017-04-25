@@ -33,3 +33,31 @@ exports.selectFundingById = function(req, res, next){
         }
     });
 };
+
+exports.addFunding = function(req, res, next){
+    // TODO: Input validation
+    var post = {
+        source: req.body.source,
+        type: req.body.type,
+        amount: req.body.amount,
+        start_date: req.body.start_date,
+        end_date: req.body.end_date,
+        acquired: req.body.acquired,
+        project_id: req.body.project_id
+    }
+    connection.query({
+        sql: 'INSERT INTO `funding` SET ?',
+        timeout: 40000,
+        values: post 
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            console.log(results);
+            res.json(results);
+        }
+    });
+};

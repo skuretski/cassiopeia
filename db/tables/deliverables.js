@@ -33,3 +33,27 @@ exports.selectDeliverableById = function(req, res, next){
         }
     });
 };
+
+exports.addDeliverable = function(req, res, next){
+    // TODO: Input validation
+    var post = {
+        title: req.body.title,
+        description: req.body.description,
+        project_id: req.body.project_id
+    }
+    connection.query({
+        sql: 'INSERT INTO `deliverables` SET ?',
+        timeout: 40000,
+        values: post 
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            console.log(results);
+            res.json(results);
+        }
+    });
+};

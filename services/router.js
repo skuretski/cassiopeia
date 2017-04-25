@@ -28,37 +28,37 @@ router.route('/disciplines/:id')
 
 router.route('/assignments')
     .get(assignments.selectAllAssignments)
-    // TODO: .post()
+    .post(assignments.addAssignment);
 router.route('/assignments/:id')
     .get(assignments.selectAssignmentById);
 
 router.route('/deliverables')
-    .get(deliverables.selectAllDeliverables);
-    // TODO: .post()
+    .get(deliverables.selectAllDeliverables)
+    .post(deliverables.addDeliverable);
 router.route('/deliverables/:id')
     .get(deliverables.selectDeliverableById);
 
 router.route('/funding')
-    .get(funding.selectAllFunding);
-    // TODO: .post()
+    .get(funding.selectAllFunding)
+    .post(funding.addFunding);
 router.route('/funding/:id')
     .get(funding.selectFundingById);
 
 router.route('/projects')
-    .get(projects.selectAllProjects);
-    // TODO: .post()
+    .get(projects.selectAllProjects)
+    .post(projects.addProject);
 router.route('/projects/:id')
     .get(projects.selectProjectById);
 
 router.route('/tasks')
-    .get(tasks.selectAllTasks);
-    // TODO: .post()
+    .get(tasks.selectAllTasks)
+    .post(tasks.addTask); 
 router.route('/tasks/:id')
     .get(tasks.selectTaskById);
 
 router.route('/sow')
-    .get(sow.selectAllSow);
-    // TODO: .post()
+    .get(sow.selectAllSow)
+    .post(sow.addSow); 
 router.route('/sow/:id')
     .get(sow.selectSowById);
 
