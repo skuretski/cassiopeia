@@ -21,6 +21,5 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-http": "^3.0.0"
-    //Mocha (installed globally)
   }
 }
