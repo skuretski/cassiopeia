@@ -16,9 +16,11 @@ router.route('/')
 
 router.route('/employees')
     .get(employees.selectAllEmployees)
-    .post(employees.addEmployee);
+    .post(employees.addEmployee)
+    .put(employees.updateEmployee);
 router.route('/employees/:id')
-    .get(employees.selectEmployeeById);
+    .get(employees.selectEmployeeById)
+    .delete(employees.deleteEmployeeById);
 
 router.route('/disciplines')
     .get(disc.selectAllDisciplines)
