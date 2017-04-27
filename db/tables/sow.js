@@ -1,8 +1,8 @@
 const connection = require('../../db/index');
 
-exports.selectAllTasks = function(req, res, next){
+exports.selectAllSow = function(req, res, next){
     connection.query({
-        sql: 'SELECT * FROM `tasks`',
+        sql: 'SELECT * FROM `sow`',
         timeout: 40000 //40seconds
     }, function(error, results){
         if(error){
@@ -16,9 +16,9 @@ exports.selectAllTasks = function(req, res, next){
     });
 };
 
-exports.selectTaskById = function(req, res, next){
+exports.selectSowById = function(req, res, next){
     connection.query({
-        sql: 'SELECT * FROM `tasks` WHERE `id` = ?',
+        sql: 'SELECT * FROM `sow` WHERE `id` = ?',
         timeout: 40000,
         values: req.params.id
     }, function(error, results){
@@ -34,17 +34,16 @@ exports.selectTaskById = function(req, res, next){
     });
 };
 
-exports.addTask = function(req, res, next){
+exports.addSow = function(req, res, next){
     // TODO: Input validation
     var post = {
-        title: req.body.title,
-        description: req.body.description,
-        committed: req.body.committed,
-        discipline_id: req.body.discipline_id,
-        deliverable_id: req.body.deliverable_id
+        start_date: req.body.start_date,
+        end_date: req.body.end_date,
+        man_mo: req.body.man_mo,
+        task_id: req.body.task_id
     }
     connection.query({
-        sql: 'INSERT INTO `tasks` SET ?',
+        sql: 'INSERT INTO `sow` SET ?',
         timeout: 40000,
         values: post 
     }, function(error, results){
