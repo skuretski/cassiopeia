@@ -3,9 +3,9 @@ var should = common.should;
 var chai = common.chai;
 var server = common.server;
 var insertId;
-var table = 'employees'
+var table = 'projects'
 
-describe('Employees Tests', function(){
+describe('Projects Tests', function(){
     
     it('get all records in table `' + table + '`', function(done){
         console.log('--------------------------------');
@@ -44,9 +44,8 @@ describe('Employees Tests', function(){
             .post('/' + table)
             .set('content-type', 'application/x-www-form-urlencoded')
             .send({
-                    first: 'Amy',
-                    last: 'Miller',
-                    discipline_id: 7
+                    title: 'Big Ole Machine',
+                    description: 'Super Duper Amazing Efficient Perpetual Motion Machine'
                 })
             .end(function(err, res){
                 res.should.have.status(200);
@@ -79,9 +78,8 @@ describe('Employees Tests', function(){
             .set('content-type', 'application/x-www-form-urlencoded')
             .send({
                     id: insertId,
-                    first: 'Anita',
-                    last: 'Baker',
-                    discipline_id: 8
+                    title: 'Big Ole Machine Redux',
+                    description: 'Slight Variation On Super Duper Amazing Efficient Perpetual Motion Machine'
                 })
             .end(function(err, res){
                 res.should.have.status(200);

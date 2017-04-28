@@ -48,9 +48,11 @@ router.route('/funding/:id')
 
 router.route('/projects')
     .get(projects.selectAllProjects)
-    .post(projects.addProject);
+    .post(projects.addProject)
+    .put(projects.updateProject);
 router.route('/projects/:id')
-    .get(projects.selectProjectById);
+    .get(projects.selectProjectById)
+    .delete(projects.deleteProjectById);
 
 router.route('/tasks')
     .get(tasks.selectAllTasks)
