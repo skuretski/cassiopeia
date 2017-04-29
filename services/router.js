@@ -58,9 +58,11 @@ router.route('/projects/:id')
 
 router.route('/tasks')
     .get(tasks.selectAllTasks)
-    .post(tasks.addTask); 
+    .post(tasks.addTask)
+    .put(tasks.updateTask);
 router.route('/tasks/:id')
-    .get(tasks.selectTaskById);
+    .get(tasks.selectTaskById)
+    .delete(tasks.deleteTaskById);
 
 router.route('/sow')
     .get(sow.selectAllSow)

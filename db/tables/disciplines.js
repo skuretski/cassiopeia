@@ -11,7 +11,6 @@ exports.selectAllDisciplines = function(req, res, next){
             });
         }
         else{
-            console.log(results);
             res.json(results);
         }
     });
