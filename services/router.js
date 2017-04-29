@@ -36,9 +36,11 @@ router.route('/assignments/:id')
 
 router.route('/deliverables')
     .get(deliverables.selectAllDeliverables)
-    .post(deliverables.addDeliverable);
+    .post(deliverables.addDeliverable)
+    .put(deliverables.updateDeliverable);
 router.route('/deliverables/:id')
-    .get(deliverables.selectDeliverableById);
+    .get(deliverables.selectDeliverableById)
+    .delete(deliverables.deleteDeliverableById);
 
 router.route('/funding')
     .get(funding.selectAllFunding)
