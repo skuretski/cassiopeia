@@ -78,14 +78,12 @@ exports.updateProject = function(req, res, next){
 };
 
 exports.deleteProjectById = function(req, res, next){
-    // TODO: ideally this would delete everything about the project
-    // TODO: meaning deliverables, tasks, assignments, everything
-    // TODO: or it would be disallowed if there were still associated rows
-    // TODO: in other tables
     connection.query({
-        sql: 'DELETE FROM `projects` WHERE `id` = ? LIMIT 1',
+        // only delete project if there are no associate deliverables
+        // client should evaluate 'affectedRows' portion of JSON response
+        sql: 'DELETE FROM `projects` WHERE `id` = ? AND NOT EXISTS (SELECT * FROM `deliverables` WHERE `project_id` = ?) LIMIT 1 ',
         timeout: 40000,
-        values: req.params.id
+        values: [req.params.id, req.params.id]
     }, function(error, results){
         if(error){
             return res.json({
