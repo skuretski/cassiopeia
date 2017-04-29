@@ -7,12 +7,17 @@ const funding = require('../db/tables/funding');
 const projects = require('../db/tables/projects');
 const tasks = require('../db/tables/tasks');
 const sow = require('../db/tables/sow');
+
+const overview = require('../db/queries/overview');
 /******************************************************/
 
 router.route('/')
     .get(function(req, res, next){
         res.render('index');
     });
+
+router.route('/overview')
+    .get(overview.selectOverview);
 
 router.route('/employees')
     .get(employees.selectAllEmployees)
