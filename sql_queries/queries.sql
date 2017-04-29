@@ -7,7 +7,7 @@ GROUP BY yr, mo, project_id ASC;
 
 --Provided funding (inner join ensures these have been associated with projects)
 SELECT SUM(amount), MONTH(start_date) AS mo, YEAR(start_date) as yr FROM funding
-INNER JOIN projects ON funding.project_id = project.id
+INNER JOIN projects ON funding.project_id = projects.id
 GROUP BY yr, mo ASC;
 
 --Assigned employees (inner joins ensures these have been assigned to employees and projects)
