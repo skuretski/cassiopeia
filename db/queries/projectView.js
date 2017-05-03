@@ -1,16 +1,18 @@
 const connection = require('../../db/index');
 
-exports.selectIndexView = function(req, res, next){
+exports.selectProjectView = function(req, res, next){
 
     function getSow() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT SUM(man_mo) AS sum_man_mo, MONTH(start_date) AS mo, YEAR(start_date) as yr, project_id FROM sow \
+                sql: 'SELECT SUM(man_mo) AS sum_man_mo, MONTH(start_date) AS mo, YEAR(start_date) as yr, deliverable_id FROM sow \
                     INNER JOIN tasks ON sow.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
-                    GROUP BY project_id, yr, mo ASC;',
-                timeout: 40000 //40seconds
+                    WHERE projects.id = ? \
+                    GROUP BY deliverable_id, yr, mo ASC;',
+                timeout: 40000, //40seconds
+                values: req.params.id
             }, function(error, results) {
                 if (error) {
                     return reject(error);
@@ -26,8 +28,10 @@ exports.selectIndexView = function(req, res, next){
             connection.query({
                 sql: 'SELECT SUM(amount) as funding_amt, MONTH(start_date) AS mo, YEAR(start_date) as yr FROM funding \
                     INNER JOIN projects ON funding.project_id = projects.id \
+                    WHERE projects.id = ? \
                     GROUP BY yr, mo ASC;',
-                timeout: 40000 //40seconds
+                timeout: 40000, //40seconds
+                values: req.params.id
             }, function(error, results) {
                 if (error) {
                     return reject(error);
@@ -46,8 +50,10 @@ exports.selectIndexView = function(req, res, next){
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
+                    WHERE projects.id = ? \
                     GROUP BY yr, mo ASC;',
-                timeout: 40000 //40seconds
+                timeout: 40000, //40seconds
+                values: req.params.id
             }, function(error, results) {
                 if (error) {
                     return reject(error);
@@ -61,9 +67,11 @@ exports.selectIndexView = function(req, res, next){
     function getTitles() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT id, title FROM projects \
-                    GROUP BY id ASC;',
-                timeout: 40000 //40seconds
+                sql: 'SELECT deliverables.id, deliverables.title FROM deliverables \
+                    INNER JOIN projects ON deliverables.project_id = projects.id \
+                    WHERE projects.id = ?;',
+                timeout: 40000, //40seconds
+                values: req.params.id
             }, function(error, results) {
                 if (error) {
                     return reject(error);
