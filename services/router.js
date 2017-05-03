@@ -8,7 +8,7 @@ const projects = require('../db/tables/projects');
 const tasks = require('../db/tables/tasks');
 const sow = require('../db/tables/sow');
 
-const overview = require('../db/queries/overview');
+const indexView = require('../db/queries/indexView');
 /******************************************************/
 
 router.route('/')
@@ -16,8 +16,8 @@ router.route('/')
         res.render('index');
     });
 
-router.route('/overview')
-    .get(overview.selectOverview);
+router.route('/indexView')
+    .get(indexView.selectOverview);
 
 router.route('/employees')
     .get(employees.selectAllEmployees)

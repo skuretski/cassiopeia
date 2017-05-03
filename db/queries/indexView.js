@@ -58,7 +58,23 @@ exports.selectOverview = function(req, res, next){
         });
     }
 
-    Promise.all([getSow(), getFunding(), getAssignedEmployees()]).then(function(results) {
+    function getProjectNames() {
+        return new Promise(function(resolve, reject) {
+            connection.query({
+                sql: 'SELECT id, title FROM projects \
+                    GROUP BY id ASC;',
+                timeout: 40000 //40seconds
+            }, function(error, results) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    Promise.all([getProjectNames(), getSow(), getFunding(), getAssignedEmployees()]).then(function(results) {
         res.json(results);
     }).catch(function(error) {
         res.json({
