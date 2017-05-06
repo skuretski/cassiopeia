@@ -9,7 +9,8 @@ exports.selectIndexView = function(req, res, next){
                     INNER JOIN tasks ON sow.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
-                    GROUP BY project_id, yr, mo ASC;',
+                    GROUP BY project_id, yr, mo ASC \
+                    ORDER BY yr, mo, project_id ASC;',
                 timeout: 40000 //40seconds
             }, function(error, results) {
                 if (error) {
