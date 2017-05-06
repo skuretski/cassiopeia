@@ -25,9 +25,10 @@ exports.selectIndexView = function(req, res, next){
     function getFunding() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT SUM(amount) as funding_amt, MONTH(start_date) AS mo, YEAR(start_date) as yr FROM funding \
+                sql: 'SELECT SUM(amount) as funding_amt, MONTH(start_date) AS mo, YEAR(start_date) as yr, projects.id as project_id FROM funding \
                     INNER JOIN projects ON funding.project_id = projects.id \
-                    GROUP BY yr, mo ASC;',
+                    GROUP BY project_id, yr, mo ASC \
+                    ORDER BY yr, mo, project_id ASC;',
                 timeout: 40000 //40seconds
             }, function(error, results) {
                 if (error) {
@@ -42,12 +43,13 @@ exports.selectIndexView = function(req, res, next){
     function getAssignedEmployees() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT MONTH(start_date) as mo, YEAR(start_date) as yr, SUM(effort) FROM assignments \
+                sql: 'SELECT SUM(effort) as sum_effort, MONTH(start_date) as mo, YEAR(start_date) as yr, projects.id as project_id FROM assignments \
                     INNER JOIN employees ON assignments.employee_id = employees.id \
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
-                    GROUP BY yr, mo ASC;',
+                    GROUP BY project_id, yr, mo ASC \
+                    ORDER BY yr, mo, project_id ASC;',
                 timeout: 40000 //40seconds
             }, function(error, results) {
                 if (error) {
