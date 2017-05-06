@@ -75,7 +75,12 @@ exports.selectIndexView = function(req, res, next){
     }
 
     Promise.all([getTitles(), getSow(), getFunding(), getAssignedEmployees()]).then(function(results) {
-        res.json(results);
+        payload = {};
+        payload.titles = results[0];
+        payload.sow = results[1];
+        payload.funding = results[2];
+        payload.assigned_employees = results[3];
+        res.json(payload);
     }).catch(function(error) {
         res.json({
             error: error
