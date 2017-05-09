@@ -69,3 +69,23 @@ exports.selectDeliverableView = function(req, res, next){
         });
     });
 };
+
+exports.selectTasksByDeliverables = function(req, res, next){
+    connection.query({
+        sql: 'SELECT tasks.id, tasks.title, tasks.description, tasks.committed FROM tasks \
+            INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
+            INNER JOIN projects ON projects.id = deliverables.project_id \
+            WHERE deliverables.id = ?;',
+        timeout: 40000, //40seconds
+        values: req.params.id
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            res.json(results);
+        }
+    });
+};

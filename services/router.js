@@ -31,6 +31,13 @@ router.route('/deliverableView/:id')
 router.route('/taskView/:id')
     .get(taskView.selectTaskView);
 
+router.route('/projects/:id/deliverables')
+    .get(projectView.selectDeliverablesByProject);
+
+router.route('/projects/:id/deliverables/:id')
+    .get(deliverableView.selectTasksByDeliverables);
+
+// Basic API Calls
 router.route('/employees')
     .get(employees.selectAllEmployees)
     .post(employees.addEmployee)

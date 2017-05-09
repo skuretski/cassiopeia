@@ -90,3 +90,22 @@ exports.selectProjectView = function(req, res, next){
         });
     });
 };
+
+exports.selectDeliverablesByProject = function(req, res, next){
+    connection.query({
+        sql: 'SELECT deliverables.id, deliverables.title, deliverables.description FROM deliverables \
+            INNER JOIN projects ON deliverables.project_id = projects.id \
+            WHERE projects.id = ?;',
+        timeout: 40000, //40seconds
+        values: req.params.id
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            res.json(results);
+        }
+    });
+};
