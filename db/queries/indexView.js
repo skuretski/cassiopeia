@@ -77,12 +77,37 @@ exports.selectIndexView = function(req, res, next){
         });
     }
 
-    Promise.all([getTitles(), getSow(), getFunding(), getAssignedEmployees()]).then(function(results) {
+    function getDateRange() {
+        return new Promise(function(resolve, reject) {
+            connection.query({
+                sql: 'SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr FROM sow \
+                    UNION ALL \
+                    SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr FROM funding \
+                    UNION ALL \
+                    SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr FROM assignments \
+                    ORDER BY yr, mo ASC;',
+                timeout: 40000 //40seconds
+            }, function(error, results) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    Promise.all([getTitles(), getSow(), getFunding(), getAssignedEmployees(), getDateRange()]).then(function(results) {
         payload = {};
         payload.titles = results[0];
         payload.sow = results[1];
         payload.funding = results[2];
         payload.assigned_employees = results[3];
+        payload.date_range = [];
+        if (results[4].length > 0) {
+            payload.date_range.push(results[4][0]);
+            payload.date_range.push(results[4][results[4].length - 1]);
+        }
         res.json(payload);
     }).catch(function(error) {
         res.json({
