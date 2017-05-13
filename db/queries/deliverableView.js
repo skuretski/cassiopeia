@@ -67,8 +67,8 @@ exports.selectDeliverableView = function(req, res, next){
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     WHERE deliverables.id = ? \
-                    GROUP BY yr, mo ASC \
-                    ORDER BY yr, mo ASC;',
+                    GROUP BY task_id, yr, mo ASC \
+                    ORDER BY yr, mo, task_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
@@ -124,26 +124,6 @@ exports.selectDeliverableView = function(req, res, next){
             });
         });
     }
-
-/*
-    Promise.all([getTitles(), getSow(), getAssignedEmployees(), getDateRange(), getDeliverable()]).then(function(results) {
-        payload = {};
-        payload.tasks = results[0];
-        payload.sow = results[1];
-        payload.assigned_employees = results[2];
-        payload.date_range = [];
-        if (results[3].length > 0) {
-            payload.date_range.push(results[3][0]);
-            payload.date_range.push(results[3][results[3].length - 1]);
-        }
-        payload.project = results[4];
-        res.json(payload);
-    }).catch(function(error) {
-        res.json({
-            error: error
-        });
-    });
-*/
 
     Promise.all([getTitles(), getSow(), getAssignedEmployees(), getDateRange(), getDeliverable(), getProject()]).then(function(results) {
         payload = {};
