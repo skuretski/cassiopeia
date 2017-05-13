@@ -2,6 +2,23 @@ const connection = require('../../db/index');
 
 exports.selectProjectView = function(req, res, next){
 
+    function getProject() {
+        return new Promise(function(resolve, reject) {
+            connection.query({
+                sql: 'SELECT id, title FROM projects \
+                    WHERE projects.id = ?;',
+                timeout: 40000, //40seconds
+                values: req.params.id
+            }, function(error, results) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
     function getSow() {
         return new Promise(function(resolve, reject) {
             connection.query({
@@ -116,9 +133,9 @@ exports.selectProjectView = function(req, res, next){
             });
         });
     }
-    Promise.all([getTitles(), getSow(), getFunding(), getAssignedEmployees(), getDateRange()]).then(function(results) {
+    Promise.all([getTitles(), getSow(), getFunding(), getAssignedEmployees(), getDateRange(), getProject()]).then(function(results) {
         payload = {};
-        payload.titles = results[0];
+        payload.deliverables = results[0];
         payload.sow = results[1];
         payload.funding = results[2];
         payload.assigned_employees = results[3];
@@ -127,6 +144,7 @@ exports.selectProjectView = function(req, res, next){
             payload.date_range.push(results[4][0]);
             payload.date_range.push(results[4][results[4].length - 1]);
         }
+        payload.project = results[5];
         res.json(payload);
     }).catch(function(error) {
         res.json({
