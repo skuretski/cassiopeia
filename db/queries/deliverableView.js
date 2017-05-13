@@ -9,7 +9,8 @@ exports.selectDeliverableView = function(req, res, next){
                     INNER JOIN tasks ON sow.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     WHERE deliverables.id = ? \
-                    GROUP BY task_id, yr, mo ASC;',
+                    GROUP BY task_id, yr, mo ASC \
+                    ORDER BY yr, mo, task_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
@@ -30,7 +31,8 @@ exports.selectDeliverableView = function(req, res, next){
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     WHERE deliverables.id = ? \
-                    GROUP BY yr, mo ASC;',
+                    GROUP BY task_id, yr, mo ASC \
+                    ORDER BY yr, mo, task_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
@@ -62,7 +64,11 @@ exports.selectDeliverableView = function(req, res, next){
     }
 
     Promise.all([getTitles(), getSow(), getAssignedEmployees()]).then(function(results) {
-        res.json(results);
+        payload = {};
+        payload.tasks = results[0];
+        payload.sow = results[1];
+        payload.assigned_employees = results[2];
+        res.json(payload);
     }).catch(function(error) {
         res.json({
             error: error
