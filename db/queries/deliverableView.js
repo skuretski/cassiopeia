@@ -85,7 +85,7 @@ exports.selectDeliverableView = function(req, res, next){
         return new Promise(function(resolve, reject) {
             connection.query({
                 sql: 'SELECT tasks.id as id, tasks.title as title FROM tasks \
-                    INNER JOIN deliverables ON tasks.deliverable_id = tasks.id \
+                    INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     WHERE deliverables.id = ? \
                     GROUP BY id ASC ;',
                 timeout: 40000, //40seconds
