@@ -97,7 +97,41 @@ exports.selectIndexView = function(req, res, next){
         });
     }
 
-    Promise.all([getTitles(), getSow(), getFunding(), getAssignedEmployees(), getDateRange()]).then(function(results) {
+    function getActiveEmployeeStarts() {
+        return new Promise(function(resolve, reject) {
+            connection.query({
+                sql: 'SELECT COUNT(id) AS act_emp, MONTH(active_start_date) AS start_mo, YEAR(active_start_date) as start_yr FROM employees \
+                    GROUP BY start_yr, start_mo ASC \
+                    ORDER BY start_yr, start_mo ASC;',
+                timeout: 40000 //40seconds
+            }, function(error, results) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    function getActiveEmployeeEnds() {
+        return new Promise(function(resolve, reject) {
+            connection.query({
+                sql: 'SELECT COUNT(id) AS act_emp, MONTH(active_end_date) AS end_mo, YEAR(active_end_date) as end_yr FROM employees \
+                    GROUP BY end_yr, end_mo ASC \
+                    ORDER BY end_yr, end_mo ASC;',
+                timeout: 40000 //40seconds
+            }, function(error, results) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    Promise.all([getTitles(), getSow(), getFunding(), getAssignedEmployees(), getDateRange(), getActiveEmployeeStarts(), getActiveEmployeeEnds()]).then(function(results) {
         payload = {};
         payload.titles = results[0];
         payload.sow = results[1];
@@ -108,6 +142,8 @@ exports.selectIndexView = function(req, res, next){
             payload.date_range.push(results[4][0]);
             payload.date_range.push(results[4][results[4].length - 1]);
         }
+        payload.active_employee_starts = results[5];
+        payload.active_employee_ends = results[6];
         res.json(payload);
     }).catch(function(error) {
         res.json({
