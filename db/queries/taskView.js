@@ -79,7 +79,7 @@ exports.selectTaskView = function(req, res, next){
     function getAssignedEmployees() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT SUM(effort) as sum_effort, first, last, employees.id as employee_id, \
+                sql: 'SELECT SUM(effort) as sum_effort, employees.id as employee_id, \
                     MONTH(start_date) as mo, YEAR(start_date) as yr FROM assignments \
                     INNER JOIN employees ON assignments.employee_id = employees.id \
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
@@ -88,6 +88,25 @@ exports.selectTaskView = function(req, res, next){
                     ORDER BY yr, mo, task_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
+            }, function(error, results) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    function getEmployees() {
+        return new Promise(function(resolve, reject) {
+            connection.query({
+                sql: 'SELECT DISTINCT employees.id, first, last FROM employees \
+                INNER JOIN assignments on employees.id = assignments.employee_id \
+                INNER JOIN tasks ON assignments.task_id = tasks.id \
+                WHERE tasks.id = ?',
+            timeout: 40000, //40seconds
+            values: req.params.id
             }, function(error, results) {
                 if (error) {
                     return reject(error);
@@ -122,18 +141,19 @@ exports.selectTaskView = function(req, res, next){
     }
 
 
-    Promise.all([getSow(), getAssignedEmployees(), getDateRange(), getTask(), getDeliverable(), getProject()]).then(function(results) {
+    Promise.all([getEmployees(), getSow(), getAssignedEmployees(), getDateRange(), getTask(), getDeliverable(), getProject()]).then(function(results) {
         payload = {};
-        payload.sow = results[0];
-        payload.assigned_employees = results[1];
+        payload.employees = results[0];
+        payload.sow = results[1];
+        payload.assigned_employees = results[2];
         payload.date_range = [];
-        if (results[2].length > 0) {
-            payload.date_range.push(results[2][0]);
-            payload.date_range.push(results[2][results[2].length - 1]);
+        if (results[3].length > 0) {
+            payload.date_range.push(results[3][0]);
+            payload.date_range.push(results[3][results[3].length - 1]);
         }
-        payload.task = results[3];
-        payload.deliverable = results[4];
-        payload.project = results[5];
+        payload.task = results[5];
+        payload.deliverable = results[5];
+        payload.project = results[6];
         res.json(payload);
     }).catch(function(error) {
         res.json({
