@@ -84,8 +84,8 @@ exports.selectTaskView = function(req, res, next){
                     INNER JOIN employees ON assignments.employee_id = employees.id \
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
                     WHERE tasks.id = ? \
-                    GROUP BY yr, mo ASC \
-                    ORDER BY yr, mo, task_id ASC;',
+                    GROUP BY employee_id, yr, mo \
+                    ORDER BY yr, mo, employee_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
@@ -104,7 +104,8 @@ exports.selectTaskView = function(req, res, next){
                 sql: 'SELECT DISTINCT employees.id, first, last FROM employees \
                 INNER JOIN assignments on employees.id = assignments.employee_id \
                 INNER JOIN tasks ON assignments.task_id = tasks.id \
-                WHERE tasks.id = ?',
+                WHERE tasks.id = ? \
+                ORDER BY last ASC;',
             timeout: 40000, //40seconds
             values: req.params.id
             }, function(error, results) {
