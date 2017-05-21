@@ -134,7 +134,7 @@ exports.selectFundingView = function(req, res, next){
     Promise.all([getProject(), getType(), getDateRange(), getFundingByProject(), getFundingByType()]).then(function(results) {
         payload = {};
         payload.project = results[0];
-        payload.source = results[1];
+        payload.type = results[1];
         payload.date_range = [];
         if (results[2].length > 0) {
             payload.date_range.push(results[2][0]);
