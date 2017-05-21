@@ -152,7 +152,7 @@ exports.selectTaskView = function(req, res, next){
             payload.date_range.push(results[3][0]);
             payload.date_range.push(results[3][results[3].length - 1]);
         }
-        payload.task = results[5];
+        payload.task = results[4];
         payload.deliverable = results[5];
         payload.project = results[6];
         res.json(payload);
