@@ -50,7 +50,20 @@ exports.addProject = function(req, res, next){
             });
         }
         else{
-            res.json(results);
+            connection.query({
+                sql:'SELECT projects.id, projects.title, projects.description from `projects` WHERE \
+                `id` = ?',
+                timeout: 40000,
+                values: results.insertId
+            }, function(error, results){
+                if(error){
+                    return res.json({
+                        error: error
+                    });
+                } else {
+                    res.json(results);
+                }
+            });
         }
     });
 };
