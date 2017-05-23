@@ -49,6 +49,8 @@ router.route('/employees')
 router.route('/employees/:id')
     .get(employees.selectEmployeeById)
     .delete(employees.deleteEmployeeById);
+router.route('/employees/discipline/:id')
+    .get(employees.selectEmployeesByDiscipline);
 
 router.route('/disciplines')
     .get(disc.selectAllDisciplines)

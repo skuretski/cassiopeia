@@ -95,3 +95,20 @@ exports.deleteEmployeeById = function(req, res, next){
         }
     });
 };
+
+exports.selectEmployeesByDiscipline = function(req, res, next) {
+    connection.query({
+        sql: 'SELECT first, last, id FROM employees \
+            WHERE discipline_id = ?',
+        timeout: 40000,
+        values: req.params.id
+    }, function(error, results) {
+        if (error) {
+            return res.json({
+                error: error
+            });
+        } else {
+            res.json(results);
+        }
+    });
+};
