@@ -99,7 +99,8 @@ exports.deleteEmployeeById = function(req, res, next){
 exports.selectEmployeesByDiscipline = function(req, res, next) {
     connection.query({
         sql: 'SELECT first, last, id FROM employees \
-            WHERE discipline_id = ?',
+            WHERE discipline_id = ? \
+            ORDER BY last ASC;',
         timeout: 40000,
         values: req.params.id
     }, function(error, results) {
