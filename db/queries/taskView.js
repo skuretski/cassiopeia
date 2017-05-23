@@ -42,7 +42,8 @@ exports.selectTaskView = function(req, res, next){
     function getTask() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT tasks.id AS id, tasks.title AS title, disciplines.title AS discipline FROM tasks \
+                sql: 'SELECT tasks.id AS id, tasks.title AS title, \
+                    disciplines.title AS discipline, disciplines.id AS discipline_id FROM tasks \
                     INNER JOIN disciplines on disciplines.id = tasks.discipline_id \
                     WHERE tasks.id = ?;',
                 timeout: 40000, //40seconds
