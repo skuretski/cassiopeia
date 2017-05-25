@@ -8,6 +8,7 @@ const projects = require('../db/tables/projects');
 const tasks = require('../db/tables/tasks');
 const sow = require('../db/tables/sow');
 
+const employeeView = require('../db/queries/employeeView');
 const fundingView = require('../db/queries/fundingView');
 const indexView = require('../db/queries/indexView');
 const projectView = require('../db/queries/projectView');
@@ -19,6 +20,9 @@ router.route('/')
     .get(function(req, res, next){
         res.render('index');
     });
+
+router.route('/employeeView')
+    .get(employeeView.selectEmployeeView);
 
 router.route('/fundingView')
     .get(fundingView.selectFundingView);
