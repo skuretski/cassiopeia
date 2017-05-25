@@ -34,6 +34,15 @@ exports.selectEmployeeView = function(req, res, next){
     };
 
     Promise.all([getEmployees(), getDisciplines()]).then(function(results) {
+        var now = new Date();
+        for (var i = 0; i < results[0].length; i++) {
+            if (results[0][i].active_start_date <= now && now <= results[0][i].active_end_date) {
+                results[0][i].active = 'Yes';
+            }
+            else {
+                results[0][i].active = 'No';
+            }
+        }
         payload = {};
         payload.employees = results[0];
         payload.disciplines = results[1];
