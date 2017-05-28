@@ -104,4 +104,8 @@ router.route('/sow')
 router.route('/sow/:id')
     .get(sow.selectSowById);
 
+router.route('*')
+    .get(function(req, res, next){
+        res.sendStatus(404);
+    })
 module.exports = router;
