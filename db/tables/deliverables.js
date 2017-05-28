@@ -52,7 +52,20 @@ exports.addDeliverable = function(req, res, next){
             });
         }
         else{
-            res.json(results);
+            connection.query({
+                sql:'SELECT deliverables.id, deliverables.title, deliverables.description, deliverables.project_id \
+                from `deliverables` WHERE `id` = ?',
+                timeout: 40000,
+                values: results.insertId
+            }, function(error, results){
+                if(error){
+                    return res.json({
+                        error: error
+                    });
+                } else {
+                    res.json(results);
+                }
+            });
         }
     });
 };
