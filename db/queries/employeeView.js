@@ -103,7 +103,24 @@ exports.selectEmployeeView = function(req, res, next){
         });
     }
 
-    Promise.all([getEmployees(), getDisciplines(), getAssignedEmployees(), getTasks(), getDeliverables(), getProjects()]).then(function(results) {
+    function getDateRange() {
+        return new Promise(function(resolve, reject) {
+            connection.query({
+                sql: 'SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr FROM assignments \
+                    ORDER BY yr, mo ASC;',
+                timeout: 40000, //40seconds
+                values: [req.params.id, req.params.id, req.params.id]
+            }, function(error, results) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    Promise.all([getEmployees(), getDisciplines(), getAssignedEmployees(), getTasks(), getDeliverables(), getProjects(), getDateRange()]).then(function(results) {
         var now = new Date();
         for (var i = 0; i < results[0].length; i++) {
             if (results[0][i].active_start_date <= now && now <= results[0][i].active_end_date) {
@@ -121,6 +138,11 @@ exports.selectEmployeeView = function(req, res, next){
         payload.tasks = results[3];
         payload.deliverables = results[4];
         payload.projects = results[5];
+        payload.date_range = [];
+        if (results[6].length > 0) {
+            payload.date_range.push(results[6][0]);
+            payload.date_range.push(results[6][results[6].length - 1]);
+        }
         res.json(payload);
     }).catch(function(error) {
         res.json({
