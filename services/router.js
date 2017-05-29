@@ -103,10 +103,14 @@ router.route('/tasks/:id')
     .delete(tasks.deleteTaskById);
 
 router.route('/sow')
-    .get(sow.selectAllSow)
-    .post(sow.addSow); 
+    .get(sow.selectAllSOW)
+    .post(sow.addSOW); 
+router.route('/sow/search')
+    .get(sow.selectSOWByTaskDate);
 router.route('/sow/:id')
-    .get(sow.selectSowById);
+    .get(sow.selectSOW)
+    .put(sow.updateSOW)
+    .delete(sow.deleteSOW);
 
 router.route('*')
     .get(function(req, res, next){
