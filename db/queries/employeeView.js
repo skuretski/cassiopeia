@@ -90,7 +90,7 @@ exports.selectEmployeeView = function(req, res, next){
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
                     GROUP BY employee_id, task_id, yr, mo \
-                    ORDER BY employee_id, yr, mo, project_id, deliverable_id, task_id ASC;',
+                    ORDER BY employee_id ASC, yr ASC, mo ASC, project_id ASC, deliverable_id ASC, task_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
@@ -114,7 +114,7 @@ exports.selectEmployeeView = function(req, res, next){
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
                     GROUP BY employee_id, deliverable_id, yr, mo \
-                    ORDER BY employee_id, yr, mo, project_id, deliverable_id ASC;',
+                    ORDER BY employee_id ASC, yr ASC, mo ASC, project_id ASC, deliverable_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
@@ -138,7 +138,7 @@ exports.selectEmployeeView = function(req, res, next){
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
                     GROUP BY employee_id, project_id, yr, mo \
-                    ORDER BY employee_id, yr, mo, project_id ASC;',
+                    ORDER BY employee_id ASC, yr ASC, mo ASC, project_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
@@ -161,7 +161,7 @@ exports.selectEmployeeView = function(req, res, next){
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
                     GROUP BY employee_id, yr, mo \
-                    ORDER BY employee_id, yr, mo ASC;',
+                    ORDER BY employee_id ASC, yr ASC, mo ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {
