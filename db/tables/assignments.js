@@ -16,7 +16,7 @@ exports.selectAllAssignments = function(req, res, next){
     });
 };
 
-exports.selectAssignmentById = function(req, res, next){
+exports.selectAssignment = function(req, res, next){
     connection.query({
         sql: 'SELECT * FROM `assignments` WHERE `id` = ?',
         timeout: 40000,
@@ -47,6 +47,63 @@ exports.addAssignment = function(req, res, next){
         sql: 'INSERT INTO `assignments` SET ?',
         timeout: 40000,
         values: post 
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            console.log(results);
+            res.json(results);
+        }
+    });
+};
+
+exports.updateAssignment = function(req, res, next){
+    // TODO: Input validation
+    var put = {
+        effort: req.body.effort,
+    }
+    connection.query({
+        sql: 'UPDATE `assignments` SET ? WHERE `id` = ?',
+        timeout: 40000,
+        values: [put, req.params.id]
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            res.json(results);
+        }
+    });
+};
+
+exports.deleteAssignment = function(req, res, next){
+    connection.query({
+        sql: 'DELETE FROM `assignments` WHERE `id` = ? LIMIT 1',
+        timeout: 40000,
+        values: req.params.id
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            res.json(results);
+        }
+    });
+};
+
+exports.selectAssignmentByEmployeeTaskDate = function(req, res, next){
+    connection.query({
+        sql: 'SELECT * FROM `assignments` WHERE `employee_id` = ? \
+            AND `task_id` = ? AND `start_date` = ?',
+        timeout: 40000,
+        values: [req.query.employee_id, req.query.task_id, req.query.start_date]
     }, function(error, results){
         if(error){
             return res.json({

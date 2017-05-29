@@ -65,8 +65,12 @@ router.route('/disciplines/:id')
 router.route('/assignments')
     .get(assignments.selectAllAssignments)
     .post(assignments.addAssignment);
+router.route('/assignments/search')
+    .get(assignments.selectAssignmentByEmployeeTaskDate);
 router.route('/assignments/:id')
-    .get(assignments.selectAssignmentById);
+    .get(assignments.selectAssignment)
+    .put(assignments.updateAssignment)
+    .delete(assignments.deleteAssignment);
 
 router.route('/deliverables')
     .get(deliverables.selectAllDeliverables)
