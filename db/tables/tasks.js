@@ -52,7 +52,7 @@ function getDeliverable(deliverableId){
 function getDiscipline(disciplineId){
     return new Promise(function(resolve, reject){
         connection.query({
-            sql: 'SELECT discipline.id from `disciplines` WHERE `id` = ?',
+            sql: 'SELECT disciplines.id from `disciplines` WHERE `id` = ?',
             timeout: 40000,
             values: disciplineId
         }, function(error, results){
@@ -73,45 +73,40 @@ exports.addTask = function(req, res, next){
         discipline_id: req.body.discipline_id,
         deliverable_id: req.body.deliverable_id
     }
-    //Checking if discipline and deliverable ids exist. If not, return JSON error
-    Promise.all([getDeliverable(post.deliverable_id), getDiscipline(post.discipline_id)]).then(function(error, results){
-        if(error){
-            return res.json({
-                error: "Unable to add task. Could not find discipline or deliverable."
-            })
-        } else{
-            //Add Task into Tasks table
-            connection.query({
-                sql: 'INSERT INTO `tasks` SET ?',
-                timeout: 40000,
-                values: post 
-            }, function(error, results){
-                if(error){
-                    return res.json({
-                        error: error
-                    });
-                }
-            //Return new task 
-                else{
-                    connection.query({
-                        sql: 'SELECT tasks.id, tasks.title, tasks.description, tasks.committed, tasks.discipline_id, \
+    //Checking if discipline and deliverable ids exist. 
+    //If not discipline or deliverable, return JSON error
+    //Else, insert into tasks and return new task object
+    Promise.all([getDeliverable(post.deliverable_id), getDiscipline(post.discipline_id)]).then(function(results){
+        connection.query({
+            sql: 'INSERT INTO `tasks` SET ?',
+            timeout: 40000,
+            values: post 
+        }, function(error, results){
+            if(error){
+                return res.json({
+                    error: error
+                });
+            }
+            //Query for newly added task and return new task 
+            else{
+                connection.query({
+                    sql: 'SELECT tasks.id, tasks.title, tasks.description, tasks.committed, tasks.discipline_id, \
                         tasks.deliverable_id from `tasks` WHERE `id` = ? LIMIT 1',
                         timeout: 40000,
                         values: results.insertId
-                    }, function(error, results){
-                        if(error){
-                            return res.json({
-                                error: error
-                            });
-                        } else{
-                            res.json(results);
-                        }
-                    });
-                }
-            });
-        }
+                }, function(error, results){
+                    if(error){
+                        return res.json({
+                            error: error
+                        });
+                    } else{
+                        res.json(results);
+                    }
+                });
+            }
+        });
     });
-};
+}
 
 exports.updateTask = function(req, res, next){
     // TODO: Input validation
