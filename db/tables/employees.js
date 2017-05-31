@@ -38,7 +38,9 @@ exports.addEmployee = function(req, res, next){
     var post = {
         first: req.body.first,
         last: req.body.last,
-        discipline_id: req.body.discipline_id
+        discipline_id: req.body.discipline_id,
+        active_start_date: req.body.active_start_date,
+        active_end_date: req.body.active_end_date,
     }
     connection.query({
         sql: 'INSERT INTO `employees` SET ?',
@@ -61,7 +63,9 @@ exports.updateEmployee = function(req, res, next){
     var put = {
         first: req.body.first,
         last: req.body.last,
-        discipline_id: req.body.discipline_id
+        discipline_id: req.body.discipline_id,
+        active_start_date: req.body.active_start_date,
+        active_end_date: req.body.active_end_date,
     }
     connection.query({
         sql: 'UPDATE `employees` SET ? WHERE `id` = ?',
