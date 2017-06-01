@@ -64,14 +64,14 @@ exports.selectProjectView = function(req, res, next){
     function getAssignedEmployees() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT SUM(effort) as sum_effort, MONTH(start_date) as mo, YEAR(start_date) as yr FROM assignments \
+                sql: 'SELECT SUM(effort) as sum_effort, MONTH(start_date) as mo, YEAR(start_date) as yr, deliverables.id as deliverable_id FROM assignments \
                     INNER JOIN employees ON assignments.employee_id = employees.id \
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
                     INNER JOIN projects ON deliverables.project_id = projects.id \
                     WHERE projects.id = ? \
-                    GROUP BY yr, mo ASC \
-                    ORDER BY yr, mo ASC;',
+                    GROUP BY deliverable_id, yr, mo ASC \
+                    ORDER BY yr, mo, deliverable_id ASC;',
                 timeout: 40000, //40seconds
                 values: req.params.id
             }, function(error, results) {

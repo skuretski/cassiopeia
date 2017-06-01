@@ -62,7 +62,7 @@ exports.selectDeliverableView = function(req, res, next){
     function getAssignedEmployees() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT SUM(effort) as sum_effort, MONTH(start_date) as mo, YEAR(start_date) as yr FROM assignments \
+                sql: 'SELECT SUM(effort) as sum_effort, MONTH(start_date) as mo, YEAR(start_date) as yr, tasks.id as task_id FROM assignments \
                     INNER JOIN employees ON assignments.employee_id = employees.id \
                     INNER JOIN tasks ON assignments.task_id = tasks.id \
                     INNER JOIN deliverables ON tasks.deliverable_id = deliverables.id \
