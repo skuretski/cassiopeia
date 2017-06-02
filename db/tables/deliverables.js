@@ -124,14 +124,13 @@ exports.updateDeliverable = function(req, res, next){
     var put = {
         title: req.body.title,
         description: req.body.description,
-        project_id: parseInt(req.body.project_id),
-        id: parseInt(req.body.id)
+        project_id: parseInt(req.body.project_id)
     }
     validateDeliverable(put).then(() => {
         connection.query({
             sql: 'UPDATE `deliverables` SET ? WHERE `id` = ?',
             timeout: 40000,
-            values: put
+            values: [put, req.body.id]
         }, function(error, results){
             if(error){
                 return res.json({
