@@ -60,9 +60,6 @@ function validateDeliverable(deliverable){
         if(deliverable.id){
             if(!Number.isInteger(deliverable.id))
                 errors.id = true;
-                connection.query({
-                    sql:
-                })
         }
         //Check if project exists
         connection.query({
