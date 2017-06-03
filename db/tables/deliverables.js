@@ -45,7 +45,8 @@ function validateDeliverable(deliverable){
         var errors = {
             project_id: false,
             description: false,
-            title: false
+            title: false,
+            id: false
         };
         if(!Number.isInteger(deliverable.project_id) || deliverable.project_id === '' || deliverable.project_id === null){
             errors.project_id = true;
@@ -55,6 +56,13 @@ function validateDeliverable(deliverable){
         }
         if(deliverable.description === '' || deliverable.description == null){
             errors.description = true;
+        }
+        if(deliverable.id){
+            if(!Number.isInteger(deliverable.id))
+                errors.id = true;
+                connection.query({
+                    sql:
+                })
         }
         //Check if project exists
         connection.query({
@@ -146,7 +154,7 @@ exports.updateDeliverable = function(req, res, next){
 
 exports.deleteDeliverableById = function(req, res, next){
     connection.query({
-        // TODO: only delete deliverable if there are no associate tasks
+        // Only delete deliverable if there are no associate tasks
         // client should evaluate 'affectedRows' portion of JSON response
         sql: 'DELETE FROM `deliverables` WHERE `id` = ? AND NOT EXISTS (SELECT * FROM `tasks` WHERE `deliverable_id` = ?) LIMIT 1',
         timeout: 40000,
