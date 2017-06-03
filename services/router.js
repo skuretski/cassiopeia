@@ -58,7 +58,8 @@ router.route('/employees/discipline/:id')
 
 router.route('/disciplines')
     .get(disc.selectAllDisciplines)
-    .post(disc.addDiscipline);
+    .post(disc.addDiscipline)
+    .put(disc.updateDiscipline);
 router.route('/disciplines/:id')
     .get(disc.selectDisciplineById);
 

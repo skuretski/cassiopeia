@@ -55,3 +55,25 @@ exports.addDiscipline = function(req, res, next){
         }
     });
 };
+
+exports.updateDiscipline = function(req, res, next){
+    // TODO: Input validation
+    var put = {
+        title: req.body.title,
+        description: req.body.description,
+    }
+    connection.query({
+        sql: 'UPDATE `disciplines` SET ? WHERE `id` = ?',
+        timeout: 40000,
+        values: [put, req.body.id]
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            res.json(results);
+        }
+    });
+};
