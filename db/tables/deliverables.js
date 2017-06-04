@@ -46,10 +46,12 @@ function validateDeliverable(deliverable){
             project_id: false,
             description: false,
             title: false,
-            id: false
+            id: false,
+            projectExist: false
         };
         if(!Number.isInteger(deliverable.project_id) || deliverable.project_id === '' || deliverable.project_id === null){
             errors.project_id = true;
+            return reject("Must have a project ID associated with deliverable.");
         } 
         if(deliverable.title === '' || deliverable.title == null){
             errors.title = true;
@@ -68,17 +70,23 @@ function validateDeliverable(deliverable){
             values: deliverable.project_id
         }, function(error, results){
             if(error){
-                errors.project_id = true;
-                return reject("Cannot find project with that ID.");
-            } 
+                errors.projectExist = true;
+            } else{
+                //If errors, return Promise rejection
+                if(results.length === 0){
+                    errors.projectExist = true;
+                }
+                if(errors.project_id || errors.description || errors.title ){
+                    return reject("Error with request parameters.");
+                }
+                if(errors.projectExist == true){
+                    return reject("Cannot find project with that ID.");
+                }
+                //Else, resolve Promise  
+                else
+                    resolve("No errors.");
+            }
         });
-        //If any errors exist, reject Promise
-        if(errors.project_id || errors.description || errors.title ){
-            return reject("Error with request parameters.");
-        }
-        //Else, resolve Promise  
-        else
-            resolve("No errors.");
     });
 }
 exports.addDeliverable = function(req, res, next){
@@ -96,9 +104,7 @@ exports.addDeliverable = function(req, res, next){
         }, function(error, results){
             //If error inserting into database, return JSON error
             if(error){
-                return res.json(500,{
-                    error: "Unable to insert deliverable"
-                });
+                return res.status(500).json(error);
             }
             //Else, return newly created deliverable
             else{
@@ -109,9 +115,7 @@ exports.addDeliverable = function(req, res, next){
                     values: results.insertId
                 }, function(error, results){
                     if(error){
-                        return res.json(500,{
-                            error: "Error returning new deliverable."
-                        });
+                        return res.status(500).json("Error returning new deliverable.");
                     } else {
                         res.json(results);
                     }
@@ -120,7 +124,7 @@ exports.addDeliverable = function(req, res, next){
         });
     }).catch(function(error){
         res.json({
-            error: "Error inserting deliverable."
+            error: error
         });
     });
 };
@@ -145,6 +149,11 @@ exports.updateDeliverable = function(req, res, next){
             else{
                 res.json(results);
             }
+        });
+    })
+    .catch(function(error){
+        res.json({
+            error: "Error updating deliverable."
         });
     });
 };
