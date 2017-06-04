@@ -137,6 +137,7 @@ function getDiscipline(disciplineId){
 
  */
 function validateTask(task){
+    console.log(task);
     return new Promise(function(resolve, reject){
         var errors = {
             id: false,
@@ -156,7 +157,7 @@ function validateTask(task){
         if(task.description == '' || task.description == null){
             errors.description = true;
         }
-        if(!Number.isInteger(task.committed) || task.committed == '' || task.committed == null){
+        if(!Number.isInteger(task.committed) || task.committed === '' || task.committed == null){
             errors.committed = true;
         }
         if(!Number.isInteger(task.discipline_id) || task.discipline_id == '' || task.discipline_id == null){
@@ -173,6 +174,7 @@ function validateTask(task){
         } else {
             resolve("No errors.");
         }
+        
     });
 }
 exports.addTask = function(req, res, next){
@@ -187,6 +189,7 @@ exports.addTask = function(req, res, next){
     //If errors, return JSON error
     //Else, insert into tasks and return new task object
     Promise.all([validateTask(post),getDeliverable(post.deliverable_id), getDiscipline(post.discipline_id)]).then(function(results){
+        console.log(results);
         connection.query({
             sql: 'INSERT INTO `tasks` SET ?',
             timeout: 40000,
@@ -200,8 +203,7 @@ exports.addTask = function(req, res, next){
             //Query for newly added task and return new task 
             else{
                 connection.query({
-                    sql: 'SELECT tasks.id, tasks.title, tasks.description, tasks.committed, tasks.discipline_id, \
-                        tasks.deliverable_id from `tasks` WHERE `id` = ? LIMIT 1',
+                    sql: 'SELECT * from `tasks` WHERE `id` = ? LIMIT 1',
                         timeout: 40000,
                         values: results.insertId
                 }, function(error, results){
@@ -216,7 +218,7 @@ exports.addTask = function(req, res, next){
             }
         });
     }).catch(function(error){
-        res.json({
+        res.json({   
             error: error
         });
     });
@@ -287,7 +289,7 @@ exports.deleteTaskById = function(req, res, next){
                             // client should evaluate 'affectedRows' portion of JSON response
                             sql: 'DELETE FROM `tasks` WHERE `id` = ?',
                             timeout: 40000,
-                            values: [req.params.id, req.params.id]
+                            values: taskId
                         }, function(error, results){
                             if(error){
                                 return res.json({

@@ -59,6 +59,7 @@ function validateAssignment(assignment){
             errors.end_date = true;
             return reject("End date must be equal to or after start date.");
         }
+        
         if(assignment.employee_id == '' || assignment.employee_id == null || !Number.isInteger(assignment.employee_id)){
             errors.employee_id = true;
             return reject("Employee ID must be an integer number.");
@@ -69,6 +70,9 @@ function validateAssignment(assignment){
         }
         if(errors.effort || errors.employee_id || errors.task_id || errors.start_date || errors.end_date)
             return reject("Error in request parameters.");
+        else{
+            return resolve("No errors.");
+        }
     });
 }
 
