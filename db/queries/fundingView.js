@@ -36,10 +36,10 @@ exports.selectFundingView = function(req, res, next){
     function getFundingByProject() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr, projects.id AS project_id, SUM(amount) as funding_amt FROM funding \
+                sql: 'SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr, projects.id AS project_id, fundingTypes.id AS fundingType_id, amount as funding_amt FROM funding \
                     INNER JOIN projects ON funding.project_id = projects.id \
-                    GROUP BY yr, mo, project_id ASC \
-                    ORDER BY yr, mo, project_id ASC;',
+                    INNER JOIN fundingTypes ON funding.type_id = fundingTypes.id \
+                    ORDER BY yr, mo, project_id, fundingType_id ASC;',
                 timeout: 40000, //40seconds
             }, function(error, results) {
                 if (error) {
@@ -54,10 +54,10 @@ exports.selectFundingView = function(req, res, next){
     function getFundingByType() {
         return new Promise(function(resolve, reject) {
             connection.query({
-                sql: 'SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr, fundingTypes.id AS fundingType_id, SUM(amount) as funding_amt FROM funding \
+                sql: 'SELECT MONTH(start_date) AS mo, YEAR(start_date) as yr, fundingTypes.id AS fundingType_id, projects.id AS project_id, amount as funding_amt FROM funding \
+                    INNER JOIN projects ON funding.project_id = projects.id \
                     INNER JOIN fundingTypes ON funding.type_id = fundingTypes.id \
-                    GROUP BY yr, mo, fundingType_id ASC \
-                    ORDER BY yr, mo, fundingType_id ASC;',
+                    ORDER BY yr, mo, fundingType_id, project_id ASC;',
                 timeout: 40000, //40seconds
             }, function(error, results) {
                 if (error) {
