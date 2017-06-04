@@ -17,21 +17,27 @@ exports.selectAllProjects = function(req, res, next){
 };
 
 exports.selectProjectById = function(req, res, next){
-    const id = req.params.id;
-    connection.query({
-        sql: 'SELECT * FROM `projects` WHERE `id` = ?',
-        timeout: 40000,
-        values: id
-    }, function(error, results){
-        if(error){
-            return res.json({
-                error: error
-            });
-        }
-        else{
-            res.json(results);
-        }
-    });
+    const id = parseInt(req.params.id);
+    if(!Number.isInteger(id) || id == '' || id == null){
+        return res.json({
+            error: "Invalid project ID."
+        });
+    } else{
+        connection.query({
+            sql: 'SELECT * FROM `projects` WHERE `id` = ?',
+            timeout: 40000,
+            values: id
+        }, function(error, results){
+            if(error){
+                return res.json({
+                    error: error
+                });
+            }
+            else{
+                res.json(results);
+            }
+        });
+    }
 };
 
 function validateProject(project){
@@ -65,6 +71,7 @@ exports.addProject = function(req, res, next){
         title: req.body.title,
         description: req.body.description
     }
+    //Validate post parameters - if no errors, attempt to insert into database
     validateProject(post).then(() => {
         connection.query({
             sql: 'INSERT INTO `projects` SET ?',
@@ -76,6 +83,7 @@ exports.addProject = function(req, res, next){
                     error: "Could not insert new project."
                 });
             }
+            //Return newly created project
             else{
                 connection.query({
                     sql:'SELECT projects.id, projects.title, projects.description from `projects` WHERE \
@@ -115,12 +123,12 @@ exports.updateProject = function(req, res, next){
         }, function(error, results){
             if(error){
                 return res.json({
-                    error: "Could not find project."
+                    error: "Could not find project with that ID."
                 });
             }
             //If project exists, update it.
             else{
-                if(results.length === 1){
+                if(results.length >= 1){
                     connection.query({
                         sql: 'UPDATE `projects` SET ? WHERE `id` = ?',
                         timeout: 40000,

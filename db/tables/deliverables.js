@@ -1,5 +1,4 @@
 const connection = require('../../db/index');
-const assert = require('assert');
 
 exports.selectAllDeliverables = function(req, res, next){
     connection.query({
@@ -124,7 +123,7 @@ exports.addDeliverable = function(req, res, next){
         });
     }).catch(function(error){
         res.json({
-            error: error
+            error: "Error inserting deliverable."
         });
     });
 };
@@ -133,25 +132,39 @@ exports.updateDeliverable = function(req, res, next){
     var put = {
         title: req.body.title,
         description: req.body.description,
-        project_id: parseInt(req.body.project_id)
+        project_id: parseInt(req.body.project_id),
+        id: parseInt(req.body.id)
     }
     validateDeliverable(put).then(() => {
         connection.query({
-            sql: 'UPDATE `deliverables` SET ? WHERE `id` = ?',
+            sql: 'SELECT * FROM `deliverables` WHERE `id` = ? LIMIT 1',
             timeout: 40000,
-            values: [put, req.body.id]
+            values: put.id
         }, function(error, results){
             if(error){
                 return res.json({
-                    error: "Error updating deliverable."
+                    error: "Could not find deliverable with that ID."
                 });
-            }
-            else{
-                res.json(results);
+            } else{
+                if(results.length >= 1){
+                    connection.query({
+                        sql: 'UPDATE `deliverables` SET ? WHERE `id` = ?',
+                        timeout: 40000,
+                        values: [put, put.id]
+                    }, function(error, results){
+                        if(error){
+                            return res.json({
+                                error: "Error updating deliverable."
+                            });
+                        }
+                        else{
+                            res.json(results);
+                        }
+                    });
+                }
             }
         });
-    })
-    .catch(function(error){
+    }).catch(function(error){
         res.json({
             error: "Error updating deliverable."
         });
@@ -159,20 +172,45 @@ exports.updateDeliverable = function(req, res, next){
 };
 
 exports.deleteDeliverableById = function(req, res, next){
-    connection.query({
-        // Only delete deliverable if there are no associate tasks
-        // client should evaluate 'affectedRows' portion of JSON response
-        sql: 'DELETE FROM `deliverables` WHERE `id` = ? AND NOT EXISTS (SELECT * FROM `tasks` WHERE `deliverable_id` = ?) LIMIT 1',
-        timeout: 40000,
-        values: [req.params.id, req.params.id]
-    }, function(error, results){
-        if(error){
-            return res.json({
-                error: error
-            });
-        }
-        else{
-            res.json(results);
-        }
-    });
+    const delivId = parseInt(req.params.id);
+    if(!Number.isInteger(projectId)){
+        return res.json({
+            error: "Invalid deliverable ID."
+        });
+    } else {
+        connection.query({
+            sql: 'SELECT * FROM `tasks` WHERE `deliverable_id` = ?',
+            timeout: 40000,
+            values: delivId
+        }, function(error ,results){
+            if(error){
+                return res.json({
+                    error: error
+                });
+            } else {
+                if(results.length >= 1){
+                    return res.json({
+                        error: "Cannot delete deliverable with associated task(s)."
+                    });
+                } else {
+                    connection.query({
+                        // Only delete deliverable if there are no associate tasks
+                        // client should evaluate 'affectedRows' portion of JSON response
+                        sql: 'DELETE FROM `deliverables` WHERE `id` = ?',
+                        timeout: 40000,
+                        values: delivId
+                    }, function(error, results){
+                        if(error){
+                            return res.json({
+                                error: "Error deleting deliverable."
+                            });
+                        }
+                        else{
+                            res.json(results);
+                        }
+                    }); // --- DELETE connection.query
+                } // --- else block
+            } // -- else block
+        }); // --- SELECT task connection.query
+    } // --- else block from error checking
 };
