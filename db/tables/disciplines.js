@@ -77,3 +77,24 @@ exports.updateDiscipline = function(req, res, next){
         }
     });
 };
+
+exports.deleteDisciplineById = function(req, res, next){
+    connection.query({
+        // only delete project if there are no associate deliverables
+        // client should evaluate 'affectedRows' portion of JSON response
+        sql: 'DELETE FROM `disciplines` WHERE `id` = ? \
+            AND NOT EXISTS (SELECT * FROM `employees` WHERE `discipline_id` = ?) \
+            AND NOT EXISTS (SELECT * FROM `tasks` WHERE `discipline_id` = ?) LIMIT 1',
+        timeout: 40000,
+        values: Array(3).fill(req.params.id)
+    }, function(error, results){
+        if(error){
+            return res.json({
+                error: error
+            });
+        }
+        else{
+            res.json(results);
+        }
+    });
+};

@@ -85,9 +85,11 @@ exports.updateEmployee = function(req, res, next){
 
 exports.deleteEmployeeById = function(req, res, next){
     connection.query({
-        sql: 'DELETE FROM `employees` WHERE `id` = ? LIMIT 1',
+        sql: 'DELETE FROM `employees` WHERE `id` = ? \
+            AND NOT EXISTS (SELECT * FROM `assignments` WHERE `employee_id` = ?) \
+            LIMIT 1',
         timeout: 40000,
-        values: req.params.id
+        values: Array(2).fill(req.params.id)
     }, function(error, results){
         if(error){
             return res.json({
