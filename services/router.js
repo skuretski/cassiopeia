@@ -61,7 +61,7 @@ router.route('/disciplines')
     .post(disc.addDiscipline)
     .put(disc.updateDiscipline);
 router.route('/disciplines/:id')
-    .get(disc.selectDisciplineById);
+    .get(disc.selectDisciplineById)
     .delete(disc.deleteDisciplineById);
 
 router.route('/assignments')
