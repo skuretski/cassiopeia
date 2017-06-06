@@ -85,8 +85,12 @@ router.route('/deliverables/:id')
 router.route('/funding')
     .get(funding.selectAllFunding)
     .post(funding.addFunding);
+router.route('/funding/search')
+    .get(funding.selectFundingByProjectTypeAcquiredDate);
 router.route('/funding/:id')
-    .get(funding.selectFundingById);
+    .get(funding.selectFunding)
+    .put(funding.updateFunding)
+    .delete(funding.deleteFunding);
 
 router.route('/projects')
     .get(projects.selectAllProjects)
