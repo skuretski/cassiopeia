@@ -18,6 +18,7 @@ exports.selectProjectById = function(req, res, next){
     const id = parseInt(req.params.id);
     if(!Number.isInteger(id) || id == '' || id == null){
         return res.status(400).json({
+            status: 400,
             data: null,
             error: "Invalid project ID."
         });

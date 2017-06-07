@@ -28,7 +28,6 @@ exports.selectFunding = function(req, res, next){
             });
         }
         else{
-            console.log(results);
             res.json(results);
         }
     });
@@ -55,7 +54,6 @@ exports.addFunding = function(req, res, next){
             });
         }
         else{
-            console.log(results);
             res.json(results);
         }
     });

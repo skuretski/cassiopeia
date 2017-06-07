@@ -28,7 +28,6 @@ exports.selectSOW = function(req, res, next){
             });
         }
         else{
-            console.log(results);
             res.json(results);
         }
     });
@@ -53,7 +52,6 @@ exports.addSOW = function(req, res, next){
             });
         }
         else{
-            console.log(results);
             res.json(results);
         }
     });

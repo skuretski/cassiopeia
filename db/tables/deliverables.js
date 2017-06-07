@@ -17,6 +17,7 @@ exports.selectAllDeliverables = function(req, res, next){
 exports.selectDeliverableById = function(req, res, next){
     if(!Number.isInteger(parseInt(req.params.id)) || req.params.id === ''){
         return res.status(400).json({
+            status: 400,
             data: null,
             error: "Invalid deliverable id."
         })
