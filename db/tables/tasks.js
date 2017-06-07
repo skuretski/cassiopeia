@@ -88,13 +88,38 @@ function getAssignmentsByTask(taskId){
     });
 }
 
+/*  Description: Helper function to find associated SOW with task.
+    Parameters: Task ID
+    Returns Promise
+        Reject: - error in database or results >= 1
+        Resolve: zero results
+ */
+function getSOWByTask(taskId){
+    return new Promise(function(resolve, reject){
+        connection.query({
+            sql: 'SELECT * FROM `sow` WHERE `task_id` = ?',
+            timeout: 40000,
+            values: taskId
+        }, function(error, results){
+            if(error){
+                return reject("Cannot find SOW with that task ID.");
+            } else{
+                if(results.length >= 1){
+                    return reject("Cannot delete task with associated SOW.");
+                } else 
+                    resolve(results);
+            }
+        });
+    });
+}
+
+
 /*  Description: Helper function to find associated disciplines with task.
     Parameters: Discipline ID
     Returns Promise
         Reject: - error in database or result of zero
         Resolve: any result > 0
  */
-
 function getDiscipline(disciplineId){
     return new Promise(function(resolve, reject){
         connection.query({
@@ -132,7 +157,6 @@ function getDiscipline(disciplineId){
             - If task.id, non-Integer value, null and empty.
         Resolve
             - If any of those conditions are not met. 
-
  */
 function validateTask(task){
     return new Promise(function(resolve, reject){
@@ -276,10 +300,11 @@ exports.deleteTaskById = function(req, res, next){
                 return res.status(500).json(error);
             } else{
                 //If there is one result:
-                //      Check if there are any assignments associated to task.
-                //      If there is assignment with this task_id, then return error message.
+                //      Check if there are any assignments or SOW associated to task.
+                //      If there is assignment or SOW with this task_id, then return error message.
                 if(results.length === 1){
-                    Promise.all([getAssignmentsByTask(results[0].id)]).then(function(results){
+                    Promise.all([getAssignmentsByTask(results[0].id),
+                                 getSOWByTask(results[0].id)]).then(function(results){
                         connection.query({
                             // only delete task if there are no associate assignments
                             // client should evaluate 'affectedRows' portion of JSON response
