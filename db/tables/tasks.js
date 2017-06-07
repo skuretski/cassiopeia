@@ -6,9 +6,7 @@ exports.selectAllTasks = function(req, res, next){
         timeout: 40000 //40seconds
     }, function(error, results){
         if(error){
-            return res.json({
-                error: error
-            });
+            return res.status(500).json(error);
         }
         else{
             res.json(results);
@@ -18,7 +16,9 @@ exports.selectAllTasks = function(req, res, next){
 
 exports.selectTaskById = function(req, res, next){
     if(!Number.isInteger(parseInt(req.params.id)) || req.params.id === ''){
-        return res.json({
+        return res.status(400).json({
+            status: 400,
+            data: null,
             error: "Invalid task Id."
         });
     } else {
@@ -28,9 +28,7 @@ exports.selectTaskById = function(req, res, next){
             values: req.params.id
         }, function(error, results){
             if(error){
-                return res.json({
-                    error: "Could not find that task."
-                });
+                return res.status(500).json(error);
             }
             else{
                 res.json(results);
@@ -137,7 +135,6 @@ function getDiscipline(disciplineId){
 
  */
 function validateTask(task){
-    console.log(task);
     return new Promise(function(resolve, reject){
         var errors = {
             id: false,
@@ -189,16 +186,13 @@ exports.addTask = function(req, res, next){
     //If errors, return JSON error
     //Else, insert into tasks and return new task object
     Promise.all([validateTask(post),getDeliverable(post.deliverable_id), getDiscipline(post.discipline_id)]).then(function(results){
-        console.log(results);
         connection.query({
             sql: 'INSERT INTO `tasks` SET ?',
             timeout: 40000,
             values: post 
         }, function(error, results){
             if(error){
-                return res.json({
-                    error: error
-                });
+                return res.status(500).json(error);
             }
             //Query for newly added task and return new task 
             else{
@@ -208,9 +202,7 @@ exports.addTask = function(req, res, next){
                         values: results.insertId
                 }, function(error, results){
                     if(error){
-                        return res.json({
-                            error: error
-                        });
+                        return res.status(500).json(error);
                     } else{
                         res.json(results);
                     }
@@ -218,7 +210,9 @@ exports.addTask = function(req, res, next){
             }
         });
     }).catch(function(error){
-        res.json({   
+        res.status(400).json({
+            status: 400,
+            data: null,   
             error: error
         });
     });
@@ -244,7 +238,7 @@ exports.updateTask = function(req, res, next){
             values: [put, put.id]
         }, function(error, results){
             if(error){
-                return res.json({
+                return res.status(500).json({
                     error: "Could not update task."
                 });
             }
@@ -254,7 +248,9 @@ exports.updateTask = function(req, res, next){
         });
     // Catches Promise errors
     }).catch(function(error){
-        res.json({
+        res.status(400).json({
+            status: 400,
+            data: null,
             error: error
         });
     });
@@ -264,7 +260,9 @@ exports.deleteTaskById = function(req, res, next){
     const taskId = parseInt(req.params.id);
     //Validate Task ID
     if(!Number.isInteger(taskId) || taskId == null || taskId == ''){
-        return res.json({
+        return res.status(400).json({
+            status: 400,
+            data: null,
             error: "Invalid task ID."
         });
     } else{
@@ -275,9 +273,7 @@ exports.deleteTaskById = function(req, res, next){
             values: taskId
         }, function(error, results){
             if(error){
-                return res.json({
-                    error: "Could not find that task."
-                });
+                return res.status(500).json(error);
             } else{
                 //If there is one result:
                 //      Check if there are any assignments associated to task.
@@ -292,9 +288,7 @@ exports.deleteTaskById = function(req, res, next){
                             values: taskId
                         }, function(error, results){
                             if(error){
-                                return res.json({
-                                    error: "Error deleting task."
-                                });
+                                return res.status(500).json(error);
                             }
                             else{
                                 res.json(results);
@@ -302,7 +296,9 @@ exports.deleteTaskById = function(req, res, next){
                         });
                     // Catch Promise errors
                     }).catch(function(error){
-                        res.json({
+                        res.status(400).json({
+                            status: 400,
+                            data: null,
                             error: error
                         });
                     });

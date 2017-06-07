@@ -28,7 +28,6 @@ exports.selectAssignment = function(req, res, next){
             });
         }
         else{
-            console.log(results);
             res.json(results);
         }
     });
@@ -46,6 +45,7 @@ function validateAssignment(assignment){
         if(Number.isNaN(assignment.effort) || assignment.effort == '' || assignment.effort == null){
             errors.effort = true;
         }
+        // TODO: Date validation (The Date object...)
         // if(assignment.start_date == '' || assignment.start_date == null || Object.prototype.toString.call(assignment.start_date) !== "[object Date]"){
         //     console.log(assignment.start_date);
         //     console.log("Error: start date");
@@ -55,10 +55,10 @@ function validateAssignment(assignment){
         //     console.log("Error: end date");
         //     errors.end_date = true;
         // }
-        if(assignment.end_date < assignment.start_date){
-            errors.end_date = true;
-            return reject("End date must be equal to or after start date.");
-        }
+        // if(assignment.end_date < assignment.start_date){
+        //     errors.end_date = true;
+        //     return reject("End date must be equal to or after start date.");
+        // }
         
         if(assignment.employee_id == '' || assignment.employee_id == null || !Number.isInteger(assignment.employee_id)){
             errors.employee_id = true;

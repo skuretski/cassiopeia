@@ -6,9 +6,7 @@ exports.selectAllDeliverables = function(req, res, next){
         timeout: 40000 //40seconds
     }, function(error, results){
         if(error){
-            return res.json({
-                error: error
-            });
+            return res.status(500).json(error);
         }
         else{
             res.json(results);
@@ -18,7 +16,8 @@ exports.selectAllDeliverables = function(req, res, next){
 
 exports.selectDeliverableById = function(req, res, next){
     if(!Number.isInteger(parseInt(req.params.id)) || req.params.id === ''){
-        return res.json({
+        return res.status(400).json({
+            data: null,
             error: "Invalid deliverable id."
         })
     } else{
@@ -28,7 +27,7 @@ exports.selectDeliverableById = function(req, res, next){
             values: req.params.id
         }, function(error, results){
             if(error){
-                return res.json({
+                return res.status(500).json({
                     error: "Could not find that deliverable."
                 });
             }
@@ -114,7 +113,7 @@ exports.addDeliverable = function(req, res, next){
                     values: results.insertId
                 }, function(error, results){
                     if(error){
-                        return res.status(500).json("Error returning new deliverable.");
+                        return res.status(500).json(error);
                     } else {
                         res.json(results);
                     }
@@ -122,7 +121,9 @@ exports.addDeliverable = function(req, res, next){
             }
         });
     }).catch(function(error){
-        res.json({
+        res.status(400).json({
+            status: 400,
+            data: null,
             error: "Error inserting deliverable."
         });
     });
@@ -142,7 +143,7 @@ exports.updateDeliverable = function(req, res, next){
             values: put.id
         }, function(error, results){
             if(error){
-                return res.json({
+                return res.status(500).json({
                     error: "Could not find deliverable with that ID."
                 });
             } else{
@@ -153,9 +154,7 @@ exports.updateDeliverable = function(req, res, next){
                         values: [put, put.id]
                     }, function(error, results){
                         if(error){
-                            return res.json({
-                                error: "Error updating deliverable."
-                            });
+                            return res.status(500).json(error);
                         }
                         else{
                             res.json(results);
@@ -165,7 +164,9 @@ exports.updateDeliverable = function(req, res, next){
             }
         });
     }).catch(function(error){
-        res.json({
+        res.status(400).json({
+            status: 400,
+            data: null,
             error: "Error updating deliverable."
         });
     });
@@ -174,7 +175,7 @@ exports.updateDeliverable = function(req, res, next){
 exports.deleteDeliverableById = function(req, res, next){
     const delivId = parseInt(req.params.id);
     if(!Number.isInteger(projectId)){
-        return res.json({
+        return res.status(400).json({
             error: "Invalid deliverable ID."
         });
     } else {
@@ -184,12 +185,12 @@ exports.deleteDeliverableById = function(req, res, next){
             values: delivId
         }, function(error ,results){
             if(error){
-                return res.json({
-                    error: error
-                });
+                return res.status(500).json(error);
             } else {
                 if(results.length >= 1){
-                    return res.json({
+                    return res.status(400).json({
+                        status: 400,
+                        data: null,
                         error: "Cannot delete deliverable with associated task(s)."
                     });
                 } else {
@@ -201,9 +202,7 @@ exports.deleteDeliverableById = function(req, res, next){
                         values: delivId
                     }, function(error, results){
                         if(error){
-                            return res.json({
-                                error: "Error deleting deliverable."
-                            });
+                            return res.status(500).json(error);
                         }
                         else{
                             res.json(results);

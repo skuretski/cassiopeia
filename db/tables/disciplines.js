@@ -6,9 +6,7 @@ exports.selectAllDisciplines = function(req, res, next){
         timeout: 40000 //40seconds
     }, function(error, results){
         if(error){
-            return res.json({
-                error: error
-            });
+            return res.status(500).json(error);
         }
         else{
             res.json(results);
@@ -17,21 +15,26 @@ exports.selectAllDisciplines = function(req, res, next){
 };
 
 exports.selectDisciplineById = function(req, res, next){
-    connection.query({
-        sql: 'SELECT * FROM `disciplines` WHERE `id` = ?',
-        timeout: 40000,
-        values: req.params.id
-    }, function(error, results){
-        if(error){
-            return res.json({
-                error: error
-            });
-        }
-        else{
-            console.log(results);
-            res.json(results);
-        }
-    });
+    if(!Number.isInteger(parseInt(req.params.id)) || req.params.id === ''){
+        return res.status(400).json({
+            status: 400,
+            data: null,
+            error: 'Invalid discipline ID.'
+        });
+    } else{
+        connection.query({
+            sql: 'SELECT * FROM `disciplines` WHERE `id` = ?',
+            timeout: 40000,
+            values: req.params.id
+        }, function(error, results){
+            if(error){
+                return res.status(500).json(error);
+            }
+            else{
+                res.json(results);
+            }
+        });
+    }
 };
 
 exports.addDiscipline = function(req, res, next){
@@ -50,7 +53,6 @@ exports.addDiscipline = function(req, res, next){
             });
         }
         else{
-            console.log(results);
             res.json(results);
         }
     });

@@ -12,7 +12,7 @@ var router = require('./services/router');
 var db = require('./db');
 //Logger
 var accessLogStream = fs.createWriteStream(path.join(__dirname, '.access.log'), {flags:'a'});
-app.use(morgan('dev', {stream: accessLogStream}));
+app.use(morgan('combined', {stream: accessLogStream}));
 
 //View Engine (Express Handlebars)
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));

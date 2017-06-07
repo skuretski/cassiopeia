@@ -6,9 +6,7 @@ exports.selectAllProjects = function(req, res, next){
         timeout: 40000 //40seconds
     }, function(error, results){
         if(error){
-            return res.json({
-                error: error
-            });
+            return res.status(500).json(error);
         }
         else{
             res.json(results);
@@ -19,7 +17,8 @@ exports.selectAllProjects = function(req, res, next){
 exports.selectProjectById = function(req, res, next){
     const id = parseInt(req.params.id);
     if(!Number.isInteger(id) || id == '' || id == null){
-        return res.json({
+        return res.status(400).json({
+            data: null,
             error: "Invalid project ID."
         });
     } else{
@@ -29,9 +28,7 @@ exports.selectProjectById = function(req, res, next){
             values: id
         }, function(error, results){
             if(error){
-                return res.json({
-                    error: error
-                });
+                return res.status(500).json(error);
             }
             else{
                 res.json(results);
@@ -79,9 +76,7 @@ exports.addProject = function(req, res, next){
             values: post 
         }, function(error, results){
             if(error){
-                return res.json({
-                    error: "Could not insert new project."
-                });
+                return res.status(500).json(error);
             }
             //Return newly created project
             else{
@@ -92,9 +87,7 @@ exports.addProject = function(req, res, next){
                     values: results.insertId
                 }, function(error, results){
                     if(error){
-                        return res.json({
-                            error: "Error retrieving new project."
-                        });
+                        return res.statu(500).json(error);
                     } else {
                         res.json(results);
                     }
@@ -102,8 +95,10 @@ exports.addProject = function(req, res, next){
             }
         })
     }).catch(function(error){
-        res.json({
-            error: "Error inserting project."
+        res.status(400).json({
+            status: 400,
+            data: null,
+            error: "Error inserting project. Invalid request parameters."
         });
     });
 };
@@ -122,9 +117,7 @@ exports.updateProject = function(req, res, next){
             values: put.id
         }, function(error, results){
             if(error){
-                return res.json({
-                    error: "Could not find project with that ID."
-                });
+                return res.status(500).json(error);
             }
             //If project exists, update it.
             else{
@@ -135,9 +128,7 @@ exports.updateProject = function(req, res, next){
                         values: [put, put.id]
                     }, function(error, results){
                         if(error){
-                            return res.json({
-                                error: "Error updating project."
-                            })
+                            return res.status(500).json(error);
                         } else {
                             res.json(results);
                         }
@@ -146,7 +137,9 @@ exports.updateProject = function(req, res, next){
             }
         });
     }).catch(function(error){
-        res.json({
+        res.status(400).json({
+            status: 400,
+            data: null,
             error: error
         });
     });
@@ -155,7 +148,9 @@ exports.updateProject = function(req, res, next){
 exports.deleteProjectById = function(req, res, next){
     const projectId = parseInt(req.params.id);
     if(!Number.isInteger(projectId)){
-        return res.json({
+        return res.status(400).json({
+            status: 400,
+            data: null,
             error: "Invalid project ID."
         });
     } else{
@@ -166,12 +161,12 @@ exports.deleteProjectById = function(req, res, next){
         }, function(error, results){
             //If there are deliverables with this project ID, return error.
             if(error){
-                return res.json({
-                    error: error
-                });
+                return res.status(500).json(error);
             } else{
                 if(results.length >= 1){
-                    return res.json({
+                    return res.status(400).json({
+                        status: 400,
+                        data: null,
                         error: "Cannot delete project with associated deliverable(s)."
                     });
             //If there are no associated deliverables, send DELETE to database
@@ -184,9 +179,7 @@ exports.deleteProjectById = function(req, res, next){
                         values: projectId
                     }, function(error, results){
                         if(error){
-                            return res.json({
-                                error: "Error deleting project."
-                            });
+                            return res.status(500).json(error);
                         }
                         else{
                             res.json(results);
