@@ -173,7 +173,7 @@ exports.updateDeliverable = function(req, res, next){
 
 exports.deleteDeliverableById = function(req, res, next){
     const delivId = parseInt(req.params.id);
-    if(!Number.isInteger(projectId)){
+    if(!Number.isInteger(delivId)){
         return res.json({
             error: "Invalid deliverable ID."
         });
